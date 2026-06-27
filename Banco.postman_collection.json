@@ -1,0 +1,446 @@
+{
+	"info": {
+		"_postman_id": "4e70e28e-8a2a-4df4-8d99-5eeeb5b565a1",
+		"name": "Banco API - Devsu Evaluation",
+		"description": "Postman Collection for verifying endpoints of the banking application (Clientes, Cuentas, Movimientos, Reportes).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Obtener Todos los Clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/clientes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Cliente por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/clientes/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Nuevo Cliente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Pedro Almodovar\",\n    \"genero\": \"Masculino\",\n    \"edad\": 42,\n    \"identificacion\": \"1755667788\",\n    \"direccion\": \"Av. 12 de Octubre\",\n    \"telefono\": \"0999888777\",\n    \"clienteid\": \"CLI1004\",\n    \"contrasena\": \"secure999\",\n    \"estado\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/clientes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Cliente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Pedro Almodovar Editado\",\n    \"genero\": \"Masculino\",\n    \"edad\": 43,\n    \"identificacion\": \"1755667788\",\n    \"direccion\": \"Av. Patria y Amazonas\",\n    \"telefono\": \"0999888666\",\n    \"clienteid\": \"CLI1004\",\n    \"contrasena\": \"newsecure\",\n    \"estado\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/clientes/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clientes",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Cliente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/clientes/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clientes",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cuentas",
+			"item": [
+				{
+					"name": "Obtener Todas las Cuentas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/cuentas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cuentas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Cuenta por Número",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/cuentas/478758",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cuentas",
+								"478758"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Nueva Cuenta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroCuenta\": \"999888\",\n    \"tipoCuenta\": \"Corriente\",\n    \"saldoInicial\": 500.00,\n    \"estado\": true,\n    \"clienteId\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/cuentas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cuentas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Cuenta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroCuenta\": \"999888\",\n    \"tipoCuenta\": \"Ahorros\",\n    \"saldoInicial\": 650.00,\n    \"estado\": true,\n    \"clienteId\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/cuentas/999888",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cuentas",
+								"999888"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Cuenta",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/cuentas/999888",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cuentas",
+								"999888"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Movimientos",
+			"item": [
+				{
+					"name": "Obtener Todos los Movimientos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/movimientos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"movimientos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Depósito (+300.00)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cuentaNumero\": \"478758\",\n    \"tipoMovimiento\": \"Deposito\",\n    \"valor\": 300.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/movimientos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"movimientos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Retiro (-150.00)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cuentaNumero\": \"478758\",\n    \"tipoMovimiento\": \"Retiro\",\n    \"valor\": -150.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/movimientos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"movimientos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Retiro Excediendo Saldo (Debe fallar - Saldo no disponible)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cuentaNumero\": \"495878\",\n    \"tipoMovimiento\": \"Retiro\",\n    \"valor\": -100.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/movimientos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"movimientos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Retiro Excediendo Cupo Diario (Debe fallar - Cupo diario Excedido)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cuentaNumero\": \"478758\",\n    \"tipoMovimiento\": \"Retiro\",\n    \"valor\": -1100.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/movimientos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"movimientos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reportes",
+			"item": [
+				{
+					"name": "Obtener Reporte de Movimientos (JSON & PDF)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/reportes?fecha=2020-01-01,2026-12-31&cliente=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"reportes"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2020-01-01,2026-12-31"
+								},
+								{
+									"key": "cliente",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

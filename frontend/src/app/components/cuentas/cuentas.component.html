@@ -1,0 +1,139 @@
+<div class="page-header">
+  <h1 class="page-title">Cuentas Bancarias</h1>
+  <button class="btn btn-primary" (click)="openNewModal()">+ Nueva Cuenta</button>
+</div>
+
+<div class="glass-card">
+  <div class="toolbar">
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar por número de cuenta, tipo o cliente..." 
+        [(ngModel)]="searchTerm"
+        (input)="filterCuentas()"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage && !isModalOpen" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Número Cuenta</th>
+          <th>Tipo</th>
+          <th>Saldo Inicial</th>
+          <th>Cliente</th>
+          <th>Estado</th>
+          <th style="text-align: center;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cuenta of filteredCuentas">
+          <td style="font-weight: 600; color: #a855f7;">{{ cuenta.numeroCuenta }}</td>
+          <td>{{ cuenta.tipoCuenta }}</td>
+          <td>$ {{ cuenta.saldoInicial | number:'1.2-2' }}</td>
+          <td>{{ cuenta.clienteNombre }}</td>
+          <td>
+            <span [class]="cuenta.estado ? 'badge badge-success' : 'badge badge-danger'">
+              {{ cuenta.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td style="text-align: center;">
+            <button class="btn btn-secondary btn-sm" style="margin-right: 8px; padding: 6px 12px;" (click)="openEditModal(cuenta)">Editar</button>
+            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="deleteCuenta(cuenta.numeroCuenta)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredCuentas.length === 0">
+          <td colspan="6" class="empty-state">
+            <div class="empty-state-icon">💳</div>
+            <p>No se encontraron cuentas registradas.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Formulario -->
+<div *ngIf="isModalOpen" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditMode ? 'Editar Cuenta' : 'Nueva Cuenta' }}</h2>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="saveCuenta()">
+      <div class="form-group">
+        <label class="form-label">Número de Cuenta</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="numeroCuenta" 
+          [(ngModel)]="currentCuenta.numeroCuenta" 
+          [disabled]="isEditMode" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cliente Titular</label>
+        <select 
+          class="form-control" 
+          name="clienteId" 
+          [(ngModel)]="currentCuenta.clienteId" 
+          required
+        >
+          <option *ngFor="let cliente of clientes" [value]="cliente.id">
+            {{ cliente.nombre }} ({{ cliente.clienteid }})
+          </option>
+        </select>
+        <div *ngIf="clientes.length === 0" style="font-size: 12px; color: var(--danger); margin-top: 5px;">
+          * No hay clientes activos registrados. Crea uno primero.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipo de Cuenta</label>
+        <select class="form-control" name="tipoCuenta" [(ngModel)]="currentCuenta.tipoCuenta" required>
+          <option value="Ahorros">Ahorros</option>
+          <option value="Corriente">Corriente</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Saldo Inicial</label>
+        <input 
+          type="number" 
+          step="0.01" 
+          class="form-control" 
+          name="saldoInicial" 
+          [(ngModel)]="currentCuenta.saldoInicial" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-control" name="estado" [(ngModel)]="currentCuenta.estado" required>
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="clientes.length === 0">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,126 @@
+<div class="page-header">
+  <h1 class="page-title">Movimientos y Transacciones</h1>
+  <button class="btn btn-primary" (click)="openNewModal()">+ Nueva Transacción</button>
+</div>
+
+<div class="glass-card">
+  <div class="toolbar">
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar por cuenta o tipo..." 
+        [(ngModel)]="searchTerm"
+        (input)="filterMovimientos()"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage && !isModalOpen" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Fecha / Hora</th>
+          <th>Número Cuenta</th>
+          <th>Tipo Movimiento</th>
+          <th>Valor Transacción</th>
+          <th>Saldo Disponible</th>
+          <th style="text-align: center;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mov of filteredMovimientos">
+          <td>{{ mov.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td style="font-weight: 500;">{{ mov.cuentaNumero }}</td>
+          <td>
+            <span [class]="mov.valor < 0 ? 'badge badge-danger' : 'badge badge-success'">
+              {{ mov.tipoMovimiento }}
+            </span>
+          </td>
+          <td [style.color]="mov.valor < 0 ? '#ef4444' : '#10b981'" style="font-weight: 600;">
+            {{ mov.valor < 0 ? '-' : '+' }} $ {{ (mov.valor < 0 ? -mov.valor : mov.valor) | number:'1.2-2' }}
+          </td>
+          <td style="font-weight: 500;">$ {{ mov.saldo | number:'1.2-2' }}</td>
+          <td style="text-align: center;">
+            <button class="btn btn-secondary btn-sm" style="margin-right: 8px; padding: 6px 12px;" (click)="openEditModal(mov)">Editar</button>
+            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="deleteMovimiento(mov.id!)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredMovimientos.length === 0">
+          <td colspan="6" class="empty-state">
+            <div class="empty-state-icon">🔄</div>
+            <p>No se encontraron movimientos registrados.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Formulario -->
+<div *ngIf="isModalOpen" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditMode ? 'Editar Transacción' : 'Nueva Transacción' }}</h2>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="saveMovimiento()">
+      <div class="form-group">
+        <label class="form-label">Cuenta de Origen / Destino</label>
+        <select 
+          class="form-control" 
+          name="selectedCuentaNumero" 
+          [(ngModel)]="selectedCuentaNumero" 
+          [disabled]="isEditMode"
+          required
+        >
+          <option *ngFor="let cuenta of cuentas" [value]="cuenta.numeroCuenta">
+            Cuenta Nº {{ cuenta.numeroCuenta }} ({{ cuenta.tipoCuenta }} - Bal: {{ cuenta.saldoInicial }})
+          </option>
+        </select>
+        <div *ngIf="cuentas.length === 0" style="font-size: 12px; color: var(--danger); margin-top: 5px;">
+          * No hay cuentas activas registradas. Crea una primero.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipo de Movimiento</label>
+        <select class="form-control" name="tipoMovimiento" [(ngModel)]="tipoMovimiento" required>
+          <option value="Deposito">Depósito (Crédito)</option>
+          <option value="Retiro">Retiro (Débito)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Valor o Monto</label>
+        <input 
+          type="number" 
+          step="0.01" 
+          min="0.01"
+          class="form-control" 
+          name="valorAbs" 
+          [(ngModel)]="valorAbs" 
+          required 
+        />
+        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">
+          * Los retiros se guardarán como valores negativos y los depósitos como positivos de forma automática.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="cuentas.length === 0">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>

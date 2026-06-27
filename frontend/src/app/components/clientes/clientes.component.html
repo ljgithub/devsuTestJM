@@ -1,0 +1,141 @@
+<div class="page-header">
+  <h1 class="page-title">Clientes</h1>
+  <button class="btn btn-primary" (click)="openNewModal()">+ Nuevo Cliente</button>
+</div>
+
+<div class="glass-card">
+  <div class="toolbar">
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar por nombre, código o identificación..." 
+        [(ngModel)]="searchTerm"
+        (input)="filterClientes()"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage && !isModalOpen" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Identificación</th>
+          <th>Edad</th>
+          <th>Género</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th style="text-align: center;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of filteredClientes">
+          <td>{{ cliente.clienteid }}</td>
+          <td style="font-weight: 500;">{{ cliente.nombre }}</td>
+          <td>{{ cliente.identificacion }}</td>
+          <td>{{ cliente.edad }}</td>
+          <td>{{ cliente.genero }}</td>
+          <td>{{ cliente.telefono }}</td>
+          <td>
+            <span [class]="cliente.estado ? 'badge badge-success' : 'badge badge-danger'">
+              {{ cliente.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td style="text-align: center;">
+            <button class="btn btn-secondary btn-sm" style="margin-right: 8px; padding: 6px 12px;" (click)="openEditModal(cliente)">Editar</button>
+            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="deleteCliente(cliente.id!)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredClientes.length === 0">
+          <td colspan="8" class="empty-state">
+            <div class="empty-state-icon">👤</div>
+            <p>No se encontraron clientes registrados.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Formulario -->
+<div *ngIf="isModalOpen" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditMode ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="saveCliente()">
+      <div class="form-group">
+        <label class="form-label">Nombre Completo</label>
+        <input type="text" class="form-control" name="nombre" [(ngModel)]="currentCliente.nombre" required />
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="form-group">
+          <label class="form-label">Género</label>
+          <select class="form-control" name="genero" [(ngModel)]="currentCliente.genero" required>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Edad</label>
+          <input type="number" class="form-control" name="edad" [(ngModel)]="currentCliente.edad" required />
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="form-group">
+          <label class="form-label">Identificación</label>
+          <input type="text" class="form-control" name="identificacion" [(ngModel)]="currentCliente.identificacion" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono</label>
+          <input type="text" class="form-control" name="telefono" [(ngModel)]="currentCliente.telefono" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Dirección</label>
+        <input type="text" class="form-control" name="direccion" [(ngModel)]="currentCliente.direccion" required />
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="form-group">
+          <label class="form-label">Código Cliente (ID)</label>
+          <input type="text" class="form-control" name="clienteid" [(ngModel)]="currentCliente.clienteid" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-control" name="contrasena" [(ngModel)]="currentCliente.contrasena" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-control" name="estado" [(ngModel)]="currentCliente.estado" required>
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>

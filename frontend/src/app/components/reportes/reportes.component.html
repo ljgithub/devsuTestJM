@@ -1,0 +1,97 @@
+<div class="page-header">
+  <h1 class="page-title">Reportes y Estados de Cuenta</h1>
+  <button 
+    class="btn btn-success" 
+    [disabled]="!base64Pdf" 
+    (click)="downloadPdf()"
+  >
+    📥 Descargar Reporte (PDF)
+  </button>
+</div>
+
+<div class="glass-card">
+  <div class="toolbar" style="flex-wrap: wrap;">
+    <div class="form-group" style="margin-bottom: 0; min-width: 250px; flex: 1;">
+      <label class="form-label">Cliente</label>
+      <select 
+        class="form-control" 
+        name="selectedClienteId" 
+        [(ngModel)]="selectedClienteId"
+        required
+      >
+        <option *ngFor="let cliente of clientes" [value]="cliente.id">
+          {{ cliente.nombre }} ({{ cliente.clienteid }})
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 0; flex: 1;">
+      <label class="form-label">Fecha Inicio</label>
+      <input type="date" class="form-control" name="fechaInicio" [(ngModel)]="fechaInicio" required />
+    </div>
+
+    <div class="form-group" style="margin-bottom: 0; flex: 1;">
+      <label class="form-label">Fecha Fin</label>
+      <input type="date" class="form-control" name="fechaFin" [(ngModel)]="fechaFin" required />
+    </div>
+
+    <button 
+      class="btn btn-primary" 
+      style="align-self: flex-end; padding: 12px 25px;"
+      (click)="buscarReporte()"
+    >
+      Buscar
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger" style="margin-top: 20px;">
+    {{ errorMessage }}
+  </div>
+
+  <div class="table-container" style="margin-top: 30px;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Número Cuenta</th>
+          <th>Tipo</th>
+          <th>Saldo Inicial</th>
+          <th>Estado</th>
+          <th>Movimiento</th>
+          <th>Saldo Disponible</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of reporteData">
+          <td>{{ row.Fecha }}</td>
+          <td style="font-weight: 500;">{{ row.Cliente }}</td>
+          <td>{{ row['Numero Cuenta'] }}</td>
+          <td>{{ row.Tipo }}</td>
+          <td>$ {{ row['Saldo Inicial'] | number:'1.2-2' }}</td>
+          <td>
+            <span [class]="row.Estado ? 'badge badge-success' : 'badge badge-danger'">
+              {{ row.Estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td [style.color]="row.Movimiento < 0 ? '#ef4444' : '#10b981'" style="font-weight: 600;">
+            {{ row.Movimiento < 0 ? '-' : '+' }} $ {{ (row.Movimiento < 0 ? -row.Movimiento : row.Movimiento) | number:'1.2-2' }}
+          </td>
+          <td style="font-weight: 600; color: #a855f7;">$ {{ row['Saldo Disponible'] | number:'1.2-2' }}</td>
+        </tr>
+        <tr *ngIf="reporteData.length === 0 && searched">
+          <td colspan="8" class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <p>No se encontraron movimientos para el cliente en el rango de fechas seleccionado.</p>
+          </td>
+        </tr>
+        <tr *ngIf="reporteData.length === 0 && !searched">
+          <td colspan="8" class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <p>Selecciona los filtros y haz clic en "Buscar" para generar el reporte.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
