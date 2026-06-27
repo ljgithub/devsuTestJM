@@ -36,42 +36,7 @@ Para levantar todo el entorno de forma automática (Base de Datos PostgreSQL, AP
 
 ---
 
-## 3. Ejecución en Modo Desarrollo (Local)
-
-Si prefieres ejecutar cada componente de forma independiente en tu máquina local:
-
-### Requisitos previos
-* **Node.js**: v22.22.3 o v24+
-* **Java Development Kit (JDK)**: versión 17
-* **PostgreSQL**: Instalado y corriendo en el puerto 5432.
-
-### A. Inicializar la Base de Datos
-1. Crea una base de datos vacía llamada `banco_db` en tu instancia de PostgreSQL.
-2. Ejecuta el script `BaseDatos.sql` sobre la base de datos para crear las tablas e insertar las semillas de prueba:
-   ```bash
-   psql -U postgres -d banco_db -f BaseDatos.sql
-   ```
-
-### B. Ejecutar el Backend (Spring Boot + Gradle)
-1. Navega a la carpeta `backend/`.
-2. Compila y ejecuta la aplicación utilizando el Gradle wrapper:
-   ```bash
-   ./gradlew bootRun
-   ```
-3. El servidor iniciará en `http://localhost:8080/api`.
-
-### C. Ejecutar el Frontend (Angular)
-1. Navega a la carpeta `frontend/`.
-2. Instala las dependencias y corre el servidor de desarrollo de Angular:
-   ```bash
-   npm install
-   npm run start
-   ```
-3. La aplicación estará accesible en `http://localhost:4200`.
-
----
-
-## 4. Pruebas Unitarias e Integración
+## 3. Pruebas Unitarias e Integración
 
 ### Pruebas del Backend
 Para ejecutar las pruebas del endpoint REST (que comprueban mediante MockMvc las excepciones de cupo diario excedido y saldo no disponible):
@@ -89,7 +54,7 @@ npm run test
 
 ---
 
-## 5. Pruebas de API con Postman
+## 4. Pruebas de API con Postman
 1. Abre Postman e importa el archivo **`Banco.postman_collection.json`** que se encuentra en la raíz del proyecto.
 2. Encontrarás carpetas con peticiones listas para validar el CRUD de cada recurso.
 3. Se incluyen escenarios de éxito y escenarios controlados de error que devuelven estados HTTP 400 Bad Request y mensajes legibles de negocio:
