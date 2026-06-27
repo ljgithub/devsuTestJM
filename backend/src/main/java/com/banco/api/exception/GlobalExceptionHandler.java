@@ -36,6 +36,25 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException ex) {
+        String rootMsg = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
+        String message = "No se puede eliminar el registro debido a dependencias activas en el sistema.";
+        
+        if (rootMsg.contains("cuenta") && rootMsg.contains("cliente_id")) {
+            message = "No se puede eliminar el cliente porque tiene cuentas bancarias asociadas.";
+        } else if (rootMsg.contains("movimiento") && rootMsg.contains("cuenta_numero")) {
+            message = "No se puede eliminar la cuenta porque contiene movimientos o transacciones registradas.";
+        }
+        
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                message
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         ErrorResponse error = new ErrorResponse(
