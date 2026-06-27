@@ -10,6 +10,7 @@ services:
       - POSTGRES_DB=banco_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - TZ=America/Guayaquil
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./BaseDatos.sql:/docker-entrypoint-initdb.d/BaseDatos.sql
@@ -32,6 +33,7 @@ services:
       - DB_NAME=banco_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+      - TZ=America/Guayaquil
     depends_on:
       db:
         condition: service_healthy
