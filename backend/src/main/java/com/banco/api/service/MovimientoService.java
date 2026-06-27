@@ -26,6 +26,9 @@ public class MovimientoService {
     @Autowired
     private CuentaRepository cuentaRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${banco.limite-diario:1000.00}")
+    private BigDecimal limiteDiario;
+
     @Transactional(readOnly = true)
     public List<MovimientoDTO> getAllMovimientos() {
         return movimientoRepository.findAll().stream()
@@ -69,12 +72,10 @@ public class MovimientoService {
             BigDecimal totalDebitsToday = movimientoRepository.sumDebitsByClienteAndDay(
                     cuenta.getCliente().getId(), startOfDay, endOfDay);
             
-            // Note: totalDebitsToday is negative or zero, let's work with absolute values
             BigDecimal absDebitsToday = totalDebitsToday.abs();
             BigDecimal absCurrentDebit = valor.abs();
-            BigDecimal limit = new BigDecimal("1000.00");
 
-            if (absDebitsToday.add(absCurrentDebit).compareTo(limit) > 0) {
+            if (absDebitsToday.add(absCurrentDebit).compareTo(limiteDiario) > 0) {
                 throw new CustomException("Cupo diario Excedido");
             }
         }
