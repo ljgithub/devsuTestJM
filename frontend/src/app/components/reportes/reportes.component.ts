@@ -26,6 +26,7 @@ export class ReportesComponent implements OnInit {
   base64Pdf: string = '';
   errorMessage: string = '';
   searched: boolean = false;
+  isDropdownOpen: boolean = false;
 
   ngOnInit() {
     this.loadClientes();
@@ -105,6 +106,33 @@ export class ReportesComponent implements OnInit {
       window.URL.revokeObjectURL(url);
     } catch (e) {
       this.errorMessage = 'Error al procesar el archivo PDF para descarga.';
+    }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  downloadJson() {
+    if (this.reporteData.length === 0) return;
+
+    try {
+      const jsonString = JSON.stringify(this.reporteData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      
+      const clienteNombre = this.clientes.find(c => c.id!.toString() === this.selectedClienteId)?.nombre || 'Cliente';
+      a.download = `EstadoCuenta_${clienteNombre.replace(/\s+/g, '_')}_${this.fechaInicio}_${this.fechaFin}.json`;
+      
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      this.errorMessage = 'Error al generar el archivo JSON para descarga.';
     }
   }
 
