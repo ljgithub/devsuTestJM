@@ -50,7 +50,7 @@
           </td>
           <td style="text-align: center;">
             <button class="btn btn-secondary btn-sm" style="margin-right: 8px; padding: 6px 12px;" (click)="openEditModal(cliente)">Editar</button>
-            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="deleteCliente(cliente.id!)">Eliminar</button>
+            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="openDeleteModal(cliente.id!)">Eliminar</button>
           </td>
         </tr>
         <tr *ngIf="filteredClientes.length === 0">
@@ -137,5 +137,25 @@
         <button type="submit" class="btn btn-primary">Guardar</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal de Confirmación de Eliminación -->
+<div *ngIf="isDeleteModalOpen" class="modal-overlay">
+  <div class="modal-content" style="max-width: 400px; text-align: center;">
+    <div class="modal-header">
+      <h2 class="modal-title" style="color: var(--danger);">Confirmar Eliminación</h2>
+      <button class="close-btn" (click)="closeDeleteModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding: 20px 0; color: var(--text-primary);">
+      <p>¿Está seguro de que desea eliminar permanentemente este cliente?</p>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 10px;">
+        * Se eliminarán todas sus cuentas y movimientos asociados de forma automática.
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center; gap: 15px;">
+      <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancelar</button>
+      <button type="button" class="btn btn-danger" (click)="confirmDeleteCliente()">Eliminar</button>
+    </div>
   </div>
 </div>

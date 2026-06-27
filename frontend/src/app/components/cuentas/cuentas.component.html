@@ -46,7 +46,7 @@
           </td>
           <td style="text-align: center;">
             <button class="btn btn-secondary btn-sm" style="margin-right: 8px; padding: 6px 12px;" (click)="openEditModal(cuenta)">Editar</button>
-            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="deleteCuenta(cuenta.numeroCuenta)">Eliminar</button>
+            <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" (click)="openDeleteModal(cuenta.numeroCuenta)">Eliminar</button>
           </td>
         </tr>
         <tr *ngIf="filteredCuentas.length === 0">
@@ -135,5 +135,25 @@
         <button type="submit" class="btn btn-primary" [disabled]="clientes.length === 0">Guardar</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal de Confirmación de Eliminación -->
+<div *ngIf="isDeleteModalOpen" class="modal-overlay">
+  <div class="modal-content" style="max-width: 400px; text-align: center;">
+    <div class="modal-header">
+      <h2 class="modal-title" style="color: var(--danger);">Confirmar Eliminación</h2>
+      <button class="close-btn" (click)="closeDeleteModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding: 20px 0; color: var(--text-primary);">
+      <p>¿Está seguro de que desea eliminar la cuenta <strong>{{ cuentaToDeleteNumero }}</strong>?</p>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 10px;">
+        * Se eliminarán todos los movimientos registrados bajo esta cuenta de forma automática.
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center; gap: 15px;">
+      <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancelar</button>
+      <button type="button" class="btn btn-danger" (click)="confirmDeleteCuenta()">Eliminar</button>
+    </div>
   </div>
 </div>

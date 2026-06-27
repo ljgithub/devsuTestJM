@@ -22,6 +22,8 @@ export class CuentasComponent implements OnInit {
 
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
+  isDeleteModalOpen: boolean = false;
+  cuentaToDeleteNumero: string | null = null;
   errorMessage: string = '';
 
   currentCuenta: Cuenta = this.getEmptyCuenta();
@@ -110,14 +112,26 @@ export class CuentasComponent implements OnInit {
     }
   }
 
-  deleteCuenta(numeroCuenta: string) {
-    if (confirm(`¿Está seguro de eliminar la cuenta ${numeroCuenta}?`)) {
-      this.cuentaService.delete(numeroCuenta).subscribe({
+  openDeleteModal(numeroCuenta: string) {
+    this.cuentaToDeleteNumero = numeroCuenta;
+    this.isDeleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+    this.cuentaToDeleteNumero = null;
+  }
+
+  confirmDeleteCuenta() {
+    if (this.cuentaToDeleteNumero !== null) {
+      this.cuentaService.delete(this.cuentaToDeleteNumero).subscribe({
         next: () => {
           this.loadCuentas();
+          this.closeDeleteModal();
         },
         error: (err) => {
           this.errorMessage = err.error?.message || 'Error al eliminar cuenta';
+          this.closeDeleteModal();
         }
       });
     }

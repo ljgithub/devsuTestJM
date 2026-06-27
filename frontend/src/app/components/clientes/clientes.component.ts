@@ -20,6 +20,8 @@ export class ClientesComponent implements OnInit {
   // Modal control
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
+  isDeleteModalOpen: boolean = false;
+  clienteToDeleteId: number | null = null;
   errorMessage: string = '';
 
   // Form Model
@@ -97,14 +99,26 @@ export class ClientesComponent implements OnInit {
     }
   }
 
-  deleteCliente(id: number) {
-    if (confirm('¿Está seguro de eliminar este cliente? Se eliminarán todas sus cuentas y movimientos asociados.')) {
-      this.clienteService.delete(id).subscribe({
+  openDeleteModal(id: number) {
+    this.clienteToDeleteId = id;
+    this.isDeleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+    this.clienteToDeleteId = null;
+  }
+
+  confirmDeleteCliente() {
+    if (this.clienteToDeleteId !== null) {
+      this.clienteService.delete(this.clienteToDeleteId).subscribe({
         next: () => {
           this.loadClientes();
+          this.closeDeleteModal();
         },
         error: (err) => {
           this.errorMessage = err.error?.message || 'Error al eliminar cliente';
+          this.closeDeleteModal();
         }
       });
     }
