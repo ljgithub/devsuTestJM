@@ -34,6 +34,10 @@ Para levantar todo el entorno de forma automática (Base de Datos PostgreSQL, AP
 4. El contenedor de base de datos se inicializará y ejecutará automáticamente el archivo `BaseDatos.sql`, creando el esquema de tablas e insertando los registros semilla de los casos de uso.
 5. Abre tu navegador e ingresa a: **`http://localhost`** para interactuar con la aplicación.
 
+> [!IMPORTANT]
+> **Nota sobre la Zona Horaria (Timezone):**
+> Por defecto, los contenedores del backend y de la base de datos están configurados en la zona horaria `America/Guayaquil` (Ecuador, UTC-5) en el archivo `docker-compose.yml`. Esto asegura que los timestamps de las transacciones y las búsquedas por rangos de fecha en el módulo de reportes coincidan exactamente con la hora local de ejecución. Si se requiere probar en otra zona horaria, se puede modificar el parámetro `TZ` en `docker-compose.yml`.
+
 ---
 
 ## 3. Pruebas Unitarias e Integración
