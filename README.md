@@ -64,3 +64,30 @@ npm run test
 3. Se incluyen escenarios de éxito y escenarios controlados de error que devuelven estados HTTP 400 Bad Request y mensajes legibles de negocio:
    * **Saldo no disponible**: Se genera cuando un retiro supera el saldo disponible.
    * **Cupo diario Excedido**: Se genera cuando el total acumulado de retiros de un cliente en el día excede los $1000.
+
+---
+
+## 5. Endpoints de la API REST (Servicios Web)
+
+Todos los endpoints del backend se encuentran expuestos bajo el puerto **`8080`** y llevan el prefijo de contexto **`/api`**.
+
+| Método | Endpoint | Request Body | Descripción |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/clientes` | - | Obtiene todos los clientes registrados. |
+| **GET** | `/api/clientes/{id}` | - | Obtiene un cliente según su ID numérico. |
+| **POST** | `/api/clientes` | `ClienteDTO` | Crea un nuevo cliente. Valida duplicidad de ID. |
+| **PUT** | `/api/clientes/{id}` | `ClienteDTO` | Modifica datos de un cliente. |
+| **DELETE** | `/api/clientes/{id}` | - | Elimina un cliente (restringido si posee cuentas). |
+| **GET** | `/api/cuentas` | - | Obtiene todas las cuentas bancarias registradas. |
+| **GET** | `/api/cuentas/{numero}` | - | Obtiene una cuenta mediante su número. |
+| **POST** | `/api/cuentas` | `CuentaDTO` | Registra una cuenta. Valida unicidad de número. |
+| **PUT** | `/api/cuentas/{numero}` | `CuentaDTO` | Actualiza la información de una cuenta. |
+| **DELETE** | `/api/cuentas/{numero}` | - | Elimina una cuenta (restringido si tiene movimientos). |
+| **GET** | `/api/movimientos` | - | Obtiene el historial total de movimientos. |
+| **GET** | `/api/movimientos/{id}` | - | Consulta un movimiento según su ID. |
+| **POST** | `/api/movimientos` | `MovimientoDTO` | Crea un depósito (+) o retiro (-). Controla saldo y cupo diario. |
+| **PUT** | `/api/movimientos/{id}` | `MovimientoDTO` | Modifica un movimiento y recalcala en cascada. |
+| **DELETE** | `/api/movimientos/{id}` | - | Elimina un movimiento y recalcala en cascada. |
+| **GET** | `/api/reportes` | - | Genera el estado de cuenta plano para Devsu (`?fecha=...&cliente=...`). |
+| **GET** | `/api/reportes/pdf` | - | Genera el estado de cuenta en JSON y PDF Base64 (`?fecha=...&cliente=...`). |
+
