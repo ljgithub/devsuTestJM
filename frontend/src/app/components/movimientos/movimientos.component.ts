@@ -22,6 +22,8 @@ export class MovimientosComponent implements OnInit {
 
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
+  isDeleteModalOpen: boolean = false;
+  movimientoToDeleteId: number | null = null;
   errorMessage: string = '';
 
   // Form Fields
@@ -131,14 +133,26 @@ export class MovimientosComponent implements OnInit {
     }
   }
 
-  deleteMovimiento(id: number) {
-    if (confirm('¿Está seguro de eliminar este registro de movimiento?')) {
-      this.movimientoService.delete(id).subscribe({
+  openDeleteModal(id: number) {
+    this.movimientoToDeleteId = id;
+    this.isDeleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+    this.movimientoToDeleteId = null;
+  }
+
+  confirmDeleteMovimiento() {
+    if (this.movimientoToDeleteId !== null) {
+      this.movimientoService.delete(this.movimientoToDeleteId).subscribe({
         next: () => {
           this.loadMovimientos();
+          this.closeDeleteModal();
         },
         error: (err) => {
           this.errorMessage = err.error?.message || 'Error al eliminar movimiento';
+          this.closeDeleteModal();
         }
       });
     }
