@@ -57,10 +57,19 @@ export class ReportesComponent implements OnInit {
     const dateRangeParam = `${this.fechaInicio},${this.fechaFin}`;
 
     this.reporteService.getReporte(dateRangeParam, this.selectedClienteId).subscribe({
-      next: (res) => {
-        this.reporteData = res.reporte;
-        this.base64Pdf = res.pdf;
+      next: (data) => {
+        this.reporteData = data;
         this.searched = true;
+        
+        // Fetch PDF as well for download
+        this.reporteService.getPdfReporte(dateRangeParam, this.selectedClienteId).subscribe({
+          next: (pdfRes) => {
+            this.base64Pdf = pdfRes.pdf;
+          },
+          error: () => {
+            this.base64Pdf = '';
+          }
+        });
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error al generar el reporte';

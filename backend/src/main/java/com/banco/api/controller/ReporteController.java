@@ -23,10 +23,25 @@ public class ReporteController {
     private ReportService reportService;
 
     @GetMapping
-    public ResponseEntity<ReporteResponseDTO> getReport(
+    public ResponseEntity<List<MovimientoReporteDTO>> getReport(
             @RequestParam("fecha") String fechaStr,
             @RequestParam("cliente") String clienteStr) {
+        List<MovimientoReporteDTO> reportData = getReportDataList(fechaStr, clienteStr);
+        List<MovimientoReporteDTO> jsonReport = reportService.generateJsonReport(reportData);
+        return ResponseEntity.ok(jsonReport);
+    }
 
+    @GetMapping("/pdf")
+    public ResponseEntity<ReporteResponseDTO> getPdfReport(
+            @RequestParam("fecha") String fechaStr,
+            @RequestParam("cliente") String clienteStr) {
+        List<MovimientoReporteDTO> reportData = getReportDataList(fechaStr, clienteStr);
+        String pdfReport = reportService.generatePdfReport(reportData);
+        List<MovimientoReporteDTO> jsonReport = reportService.generateJsonReport(reportData);
+        return ResponseEntity.ok(new ReporteResponseDTO(pdfReport, jsonReport));
+    }
+
+    private List<MovimientoReporteDTO> getReportDataList(String fechaStr, String clienteStr) {
         if (fechaStr == null || fechaStr.trim().isEmpty()) {
             throw new CustomException("El parámetro 'fecha' es obligatorio");
         }
@@ -50,19 +65,12 @@ public class ReporteController {
         }
 
         // Query report data
-        List<MovimientoReporteDTO> reportData;
         try {
             Integer id = Integer.parseInt(clienteStr);
-            reportData = reportService.getReportData(id, start, end);
+            return reportService.getReportData(id, start, end);
         } catch (NumberFormatException e) {
-            reportData = reportService.getReportDataByClienteCode(clienteStr, start, end);
+            return reportService.getReportDataByClienteCode(clienteStr, start, end);
         }
-
-        // Generate JSON and PDF outputs utilizing Strategy Pattern
-        List<MovimientoReporteDTO> jsonReport = reportService.generateJsonReport(reportData);
-        String pdfReport = reportService.generatePdfReport(reportData);
-
-        return ResponseEntity.ok(new ReporteResponseDTO(pdfReport, jsonReport));
     }
 
     private LocalDateTime parseDate(String dateStr, boolean endOfDay) {
