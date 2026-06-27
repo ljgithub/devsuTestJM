@@ -14,6 +14,8 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Integer>
 
     List<Movimiento> findByCuentaNumeroCuentaOrderByFechaDesc(String numeroCuenta);
 
+    List<Movimiento> findByCuentaNumeroCuentaOrderByFechaAsc(String numeroCuenta);
+
     List<Movimiento> findByCuentaClienteIdAndFechaBetweenOrderByFechaDesc(
             Integer id, LocalDateTime start, LocalDateTime end);
 

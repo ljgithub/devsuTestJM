@@ -91,30 +91,56 @@ public class MovimientoService {
         movimiento.setCuenta(cuenta);
 
         Movimiento saved = movimientoRepository.save(movimiento);
-        return convertToDTO(saved);
+        recalculateBalances(cuenta.getNumeroCuenta());
+        Movimiento reloaded = movimientoRepository.findById(saved.getId()).orElse(saved);
+        return convertToDTO(reloaded);
     }
 
     @Transactional
     public MovimientoDTO updateMovimiento(Integer id, MovimientoDTO dto) {
         Movimiento existing = movimientoRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Movimiento no encontrado con ID: " + id));
+        
+        // When updating a transaction, we allow changing the value, date, and type
         existing.setTipoMovimiento(dto.getTipoMovimiento());
         existing.setValor(dto.getValor());
-        existing.setSaldo(dto.getSaldo() != null ? dto.getSaldo() : existing.getSaldo());
         if (dto.getFecha() != null) {
             existing.setFecha(dto.getFecha());
         }
-        Movimiento updated = movimientoRepository.save(existing);
-        return convertToDTO(updated);
+        
+        Movimiento saved = movimientoRepository.save(existing);
+        recalculateBalances(existing.getCuenta().getNumeroCuenta());
+        
+        Movimiento reloaded = movimientoRepository.findById(saved.getId()).orElse(saved);
+        return convertToDTO(reloaded);
     }
 
     @Transactional
     public void deleteMovimiento(Integer id) {
-        if (!movimientoRepository.existsById(id)) {
-            throw new CustomException("Movimiento no encontrado con ID: " + id);
-        }
-        movimientoRepository.deleteById(id);
+        Movimiento existing = movimientoRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Movimiento no encontrado con ID: " + id));
+        String numeroCuenta = existing.getCuenta().getNumeroCuenta();
+        
+        movimientoRepository.delete(existing);
+        recalculateBalances(numeroCuenta);
     }
+
+    private void recalculateBalances(String numeroCuenta) {
+        Cuenta cuenta = cuentaRepository.findByNumeroCuenta(numeroCuenta)
+                .orElseThrow(() -> new CustomException("Cuenta no encontrada con número: " + numeroCuenta));
+        
+        List<Movimiento> movimientos = movimientoRepository.findByCuentaNumeroCuentaOrderByFechaAsc(numeroCuenta);
+        BigDecimal currentBalance = cuenta.getSaldoInicial();
+        for (Movimiento m : movimientos) {
+            currentBalance = currentBalance.add(m.getValor());
+            if (currentBalance.compareTo(BigDecimal.ZERO) < 0) {
+                throw new CustomException("Saldo no disponible");
+            }
+            m.setSaldo(currentBalance);
+        }
+        movimientoRepository.saveAll(movimientos);
+    }
+
 
     private MovimientoDTO convertToDTO(Movimiento m) {
         return new MovimientoDTO(
